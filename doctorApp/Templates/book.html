@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Appointment-Booking</title>
+    <style>
+        * {
+         box-sizing: border-box;
+         background-image:url(../static/background.jpg) ;
+       }
+       
+       .column {
+         float: left;
+         width: 30%;
+         padding: 10px;
+         height: 96vh; 
+       }
+       .column2 {
+         float: left;
+         width: 70%;
+         padding: 30px;
+         height: 96vh; 
+       }
+       
+       .row:after {
+         content: "";
+         display: table;
+         clear: both;
+         
+       }
+       .main-form div input {
+           width: 100%;
+           font-family: 'Times New Roman', Times, serif;
+           background: none;
+           border: 1px solid #ffca00;;
+           font-size: 20px;
+           color: #fff;
+           outline: none;
+           padding: 3px 0 3px 10px;
+           margin-top: 10px;
+       }
+       .main-form div span{
+           width: 100%;
+           font-family: 'Times New Roman', Times, serif;
+           color: #fff;
+           font-size: 25px;
+       }
+       
+       #submit{
+           width: 100%;
+           text-align: center;
+       }
+       #submit input{
+           font-family: 'Times New Roman', Times, serif;
+           width: 200px;
+           background-color: rgb(44, 7, 131) !important;
+           color: black !important;
+           transition: all .3s;
+       }
+       #submit input:hover{
+           font-family: 'Times New Roman', Times, serif;
+           width: 200px;
+           background-color: black !important;
+           color: #fff !important;
+       }
+       #submit input:active{
+           font-size: 19px;
+           background-color: rgb(46, 20, 5) !important;
+           color: #fff !important;
+       }
+       .main-form div select{
+           width: 100%;
+           font-family: 'Times New Roman', Times, serif;
+           background-color: grey;
+           border: 1px solid #ffca00;;
+           font-size: 20px;
+           color: #fff;
+           outline: none;
+           padding: 3px 0 3px 10px;
+           margin-top: 10px;
+       }
+       
+       @media screen and (max-width: 600px) {
+         .column {
+           align-items: center;
+           width: 100%;
+         }
+       }
+       </style>
+  </head>
+
+  <div class="row">
+    <div class="column" style="background-color:burlywood;">
+        <br>
+        <div style="color:#fff; margin-top: 10px;margin: 30px;">
+            <span><i class="fas fa-user"></i> <h2>{{user.username}}</h2></span> 
+              <p><h3>
+                {% block content %}
+                  {% if user.is_authenticated %}
+                  Welcome Back {{ user.username }} &emsp;
+
+                  <a href="{% url 'login' %}" >Log Out</a><p>
+                    <br>
+                  
+                      View Bookings <a href="{% url 'apointt' %}">View</a><p></p>
+                      This are your bookings: </h3>
+                      {% for ap in apbk %}
+                        <h4 style="color:white ;">
+                            {% if ap.email == user.email and ap.Name == user.username %}
+                              
+                              On {{ap.Date}}&emsp; at &emsp;{{ap.Schedule}}&emsp; &emsp; <p> &emsp; with&emsp;  Dr. {{ap.Doctor}}
+                            {% endif %}
+                        
+                            {% if user.username == "admin" %}
+                                Dr. {{ap.Doctor}} has an Appointment with<strong style="color:blue; font-size: 30px;"> {{ap.Name}} </strong>  on <p>&emsp; {{ap.Date}} 
+                             {% endif %}
+      
+                             {% if ap.Doctor == user.username %}<ul>
+                                <li><h4>You have an appointment with: {{ap.Name}}, on {{ap.Date}} <br>
+                                  &emsp;Reach out to him/her either through {{ap.email}} or {{ap.Phone}} to reschedule.</h4></li>
+                                </ul>
+                             {% endif %}
+                             {% endfor %}
+
+                  {% else %}
+                    <p>You are not logged in</p>
+                    <a href="{% url 'login' %}">Log In</a>
+                  {% endif %}
+                {% endblock %}
+              <br>
+              <p>
+               
+
+                      
+    
+   </h4>
+      
+      <br>
+    </div>
+
+      </div>
+      <center>
+      <div class="column2" >
+    <div class="form">
+      <div class="form-text">
+        <h1 style="color:#fff">
+          Book An Appoint Now. We'll get in touch soon.
+          
+        </h1>
+        <p style="color:#fff">
+          Hi @{{user.username}} would you like to change your contact email? Please do so while filling the form below.
+          
+        </p>
+        <p>
+          
+        </p>
+      </div>
+      <div class="main-form">
+        <form action="" method="POST">
+            {% csrf_token %}
+          <div>
+            <span>Name   </span>
+            <input type="text" name="Name" id="Name" placeholder="Fullname.. " required value='{{ user.username }}' style="width:300px;" />
+          </div>
+          <div>
+            <span>Email   </span>
+            <input type="email"name="email" id="email" placeholder="Email.." required value="{{user.email}}" style="width:300px;" />
+          </div>
+          <div>
+            <span>Phone  </span>
+            <input type="number" name="Phone" id="Number" placeholder="Phone No..." required style="width:300px;" />
+          </div>
+          
+          <div>
+            <span>Date    </span>
+            <input type="date" name="Date" id="Date" placeholder="date" required style="width:300px;" />
+          </div>
+          <div>
+            <span>Schedule    </span>
+            <select  type="text" name="Schedule" id="Schedule" placeholder="Schedule" required style="width:300px;" >
+                <option Value="8:00AM-10:00AM"> 8:00AM-10:00AM</option>
+                <option Value="10:30AM-12:30PM">10:30AM-12:30PM</option>
+                <option value="1:00PM-3:00PM">1:00PM-3:00PM</option>
+                <option value="3:30PM-5:30PM">3:30PM-5:30PM</option>
+                </select>
+          </div>
+          
+          <div>
+            <span>Doctor    </span>
+            <select  type="text" name="Doctor" id="Doctor" placeholder="Doctor" required style="width:300px;" >
+                <option Value="John"> John</option>
+                <option Value="Sam">Sam</option>
+                <option value="Ann">Ann</option>
+                <option value="Liz">Liz</option>
+                </select>
+          </div>
+          <div>
+            <span>Disease Category   </span>
+            <select  type="text" name="Disease" id="Disease" placeholder="Disease" required style="width:300px;" >
+                <option Value="Allergists">Allergists </option>
+                <option Value="Dermatologists">  Dermatologists</option>
+                <option value="Infectious disease doctors">  Infectious disease doctors</option>
+                <option value="Ophthalmologists"> Ophthalmologists </option>
+                <option value="Obstetrician/gynecologists."> Obstetrician/gynecologists </option>
+                <option value="Cardiologists"> Cardiologists </option>
+                <option value="Endocrinologists"> Endocrinologists </option>
+                <option value="Gastroenterologists"> Gastroenterologists </option>
+                </select>
+          </div>
+          
+          
+          <div id="submit">
+            <input type="submit" value="SUBMIT" id="submit" />
+          </div>
+        </form>
+      </div>
+<ul>
+
+</ul>
+
+    </div>
+</center>
+  </body>
+</html>
